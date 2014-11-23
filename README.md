@@ -12,7 +12,7 @@ Repo contains one R script "run_analysis.R" that does the following.
     4 Appropriately labels the data set with descriptive variable names.
     5 Creates a second, independent tidy data set with the average of each variable for each activity and each subject.
 
-This script assumes the Samsung data is extracted in your working directory
+This script assumes the data is extracted in your working directory
 Type source("run_analysis.R") to run the R code
 
 This will result in creation of two files in your working directory
