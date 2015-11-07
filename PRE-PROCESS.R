@@ -1,8 +1,10 @@
-require(xgboost); require(readr); require(caret); require(doParallel); require(psych)
+require(xgboost); require(readr); require(caret); require(doParallel); require(psych); require(FeatureHashing)
 
-train <- read_csv("D:/kaggle/walmart_seg/train.csv")
+train <- read_csv("C:/Users/amulya/Documents/Kaggle/Walmart/train.csv")
 
-test <- read_csv("D:/kaggle/walmart_seg/test.csv")
+test <- read_csv("C:/Users/amulya/Documents/Kaggle/Walmart/test.csv")
+
+visit_num <- test$VisitNumber
 
 feature.names <- names(train)[!names(train) %in% c("TripType")]
 
@@ -23,6 +25,9 @@ for( i in 1:38 ){
 }
 
 table(train$TripType)
+
+#############################################################################################################
+
 
 #very basic stuff--------------------------------------------------------------------------------
 
