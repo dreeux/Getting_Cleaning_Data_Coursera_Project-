@@ -1,3 +1,45 @@
+
+#feature hashing
+
+train_hash <- train
+
+train_hash[is.na(train_hash)] <- 0
+
+split <- createDataPartition(y = train_hash$TripType, p = 0.9, list = F) 
+
+training <- train_hash[split,]
+
+validation <- train_hash[-split,]
+
+training_hash = hashed.model.matrix(~., data=training[,feature.names],  hash.size=2^16,  
+                                    
+                                    transpose=FALSE, create.mapping=TRUE, is.dgCMatrix = TRUE)
+
+validation_hash = hashed.model.matrix(~., data=validation[,feature.names],  hash.size=2^16,  
+                                      
+                                      transpose=FALSE, create.mapping=TRUE, is.dgCMatrix = TRUE)
+
+response_val <- train_hash$TripType[-split]
+
+response_train <- train_hash$TripType[split]
+
+dval <- xgb.DMatrix(data=validation_hash, label = response_val )
+
+dtrain <- xgb.DMatrix(data=training_hash,  label = response_train)
+
+watchlist <- list(val=dval, train=dtrain)
+
+clf <- xgb.train(params = param, data = dtrain, nrounds = 500, watchlist = watchlist,
+                 
+                 verbose = 1, maximize = T)
+
+
+
+
+
+
+#################################################################################################
+
 tra <- train[, feature.names]
 
 split <- createDataPartition(y = train$TripType, p = 0.9, list = F) 
@@ -22,47 +64,65 @@ param <- list(objective = "multi:softprob",
               
               num_class = numberOfClasses,
               
-              nthreads = 4)
+              nthreads = 4
+              
+              )
 gc()
 
-cl <- makeCluster(4); registerDoParallel(cl)
+cl <- makeCluster(detectCores()); registerDoParallel(cl)
 
 start <- Sys.time()
 
+#############################################################################################################
+  
 clf <- xgb.train(params = param, data = dtrain, nrounds = 50, watchlist = watchlist,
-                 verbose = 1, maximize = T)
+                 
+                 verbose = 1, maximize = T, early.stop.round = 50)
+
+#############################################################################################################
+
+#grid search
+
+for (depth in c(9, 10, 8)) {
+  
+  for (rounds in c(2000, 3000)) {
+    
+    for(eta in c(0.3, 0.2, 0.1)){
+      
+      # train
+      param <- list(objective = "multi:softprob",
+                    
+                    eval_metric = "mlogloss",
+                    
+                    num_class = numberOfClasses,
+                    
+                    max_depth = depth ,
+                    
+                    eta = eta,
+                    
+                    nthreads = 4
+                    
+      )
+      
+      
+      clf <- xgb.train(params = param, data = dtrain, watchlist = watchlist, nrounds = rounds,
+                       
+                       verbose = 1, maximize = T)
+      gc()
+      
+      
+      xgb.save(clf, paste0("clf", "_", rounds, "_",depth, "_", eta) )
+      
+      #scoring to be done -- issues with function scoring
+      
+    }     
+  }
+}  
+
 
 Time_Taken <- Sys.time() - start
 
+
 ##after 900 rounds it increases then falls off hd check it`s behaviour further
 
-pred <- predict(clf, data.matrix(test[, feature.names])) 
-
-pred <- matrix(pred, nrow=38, ncol=length(pred)/38) #there are total 38 classes 
-
-pred = data.frame(t(pred))
-
-sample <- read_csv('sample_submission.csv') 
-
-cnames <- names(sample)[2:ncol(sample)] 
-
-names(pred) <- cnames
-
-submission <- cbind.data.frame(VisitNumber = test$VisitNumber, pred) 
-
-submission <- setDT(submission)
-
-submission <- (submission[ , lapply(.SD, harmonic.mean), by = VisitNumber])
-
-#assuming you consolidated the data by visit number 
-
-write_csv(submission, "D:/kaggle/walmart_seg/submission/1162015_2.csv")
-
-##------------------------------------------------------------------------------------------------------------
-cv.nround <- 5
-
-cv.nfold <- 3
-
-bst.cv = xgb.cv(param=param, data = dtrain, label = train$TripType, 
-                
-                nfold = cv.nfold, nrounds = cv.nround)
+submit(clf, test, "1172015.csv")
