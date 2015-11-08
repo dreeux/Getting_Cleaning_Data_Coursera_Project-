@@ -136,3 +136,13 @@ Time_Taken <- Sys.time() - start
 ##after 900 rounds it increases then falls off check it`s behaviour further
 
 submit(clf, test, "1172015.csv")
+
+####################################################################################################################
+
+#save and retrain model later
+
+ptrain <- predict(clf, dtrain, outputmargin = T)
+
+setinfo(dtrain, "base_margin", ptrain)
+
+clf_extra <- xgboost(params = param, data = dtrain, nround = 1500)
