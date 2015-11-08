@@ -87,7 +87,7 @@ for (depth in c(9, 10, 8)) {
                     eta = eta,
                     
                     nthreads = 4
-                    )
+      )
       
       
       clf <- xgb.train(params = param, data = dtrain, watchlist = watchlist, nrounds = rounds,
@@ -156,6 +156,22 @@ my.f3cnt<-function(th2, vn1, vn2, vn3, filter=TRUE) {
   tmp$cnt[is.na(tmp$cnt)]<-0
   
   return(tmp$cnt)
-
+  
 }
 
+
+#############################################################################################################
+
+addAggFeatures <- function(data) {
+  
+
+    # add new features
+  
+  mutate(data, feat_sum = as.integer(rowSums(data[, 1:ncol(tmp_new)])),  # count sum of features by row
+  
+                feat_var = as.integer(apply(data[, 1:ncol(tmp_new)], 1, var)),  # variance of features by row
+         
+                feat_filled = as.integer(rowSums(data[, 1:ncol(tmp_new)] != 0))  # count no. of non-empty features
+  )
+  
+}
