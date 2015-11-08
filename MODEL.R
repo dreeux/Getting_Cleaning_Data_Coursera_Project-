@@ -1,6 +1,8 @@
 
 #feature hashing
 
+# didn`t show much of a difference in eval_metric for50 trees and default param
+
 train_hash <- train
 
 train_hash[is.na(train_hash)] <- 0
@@ -40,23 +42,27 @@ clf <- xgb.train(params = param, data = dtrain, nrounds = 500, watchlist = watch
 
 #################################################################################################
 
+#normal training method
+
+feature.names <- names(train)
+
 tra <- train[, feature.names]
 
-split <- createDataPartition(y = train$TripType, p = 0.9, list = F) 
+split <- createDataPartition(y = train_raw$TripType, p = 0.9, list = F) 
 
-response_val <- train$TripType[-split]
+response_val <- train_raw$TripType[-split]
 
-response_train <- train$TripType[split]
+response_train <- train_raw$TripType[split]
 
-dval <- xgb.DMatrix(data=data.matrix(tra[-split,]),  label = response_val )
+dval <- xgb.DMatrix( data = data.matrix(tra[-split,]),  label = response_val )
 
-dtrain <- xgb.DMatrix(data=data.matrix(tra[split,]), label = response_train)
+dtrain <- xgb.DMatrix( data = data.matrix(tra[split,]), label = response_train)
 
 watchlist <- list(val=dval, train=dtrain)
 
 #basic training----------------------------------------------------------------------------------
 
-numberOfClasses <- max(train$TripType) + 1
+numberOfClasses <- max(train_raw$TripType) + 1
 
 param <- list(objective = "multi:softprob",
               
@@ -64,22 +70,27 @@ param <- list(objective = "multi:softprob",
               
               num_class = numberOfClasses,
               
-              nthreads = 4
-              
+              nthreads = detectCores()
               )
+
 gc()
 
+
 cl <- makeCluster(detectCores()); registerDoParallel(cl)
+
 
 start <- Sys.time()
 
 #############################################################################################################
-  
+
+
 clf <- xgb.train(params = param, data = dtrain, nrounds = 50, watchlist = watchlist,
                  
-                 verbose = 1, maximize = T, early.stop.round = 50)
+                 verbose = 1, maximize = T)
+
 
 #############################################################################################################
+
 
 #grid search
 
@@ -100,7 +111,7 @@ for (depth in c(9, 10, 8)) {
                     
                     eta = eta,
                     
-                    nthreads = 4
+                    nthreads = detectCores()
                     
       )
       
@@ -123,6 +134,6 @@ for (depth in c(9, 10, 8)) {
 Time_Taken <- Sys.time() - start
 
 
-##after 900 rounds it increases then falls off hd check it`s behaviour further
+##after 900 rounds it increases then falls off check it`s behaviour further
 
 submit(clf, test, "1172015.csv")
