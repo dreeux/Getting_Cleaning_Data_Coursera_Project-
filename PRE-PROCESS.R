@@ -2,15 +2,17 @@
 
 #load packages
 
-require(xgboost); require(readr); require(caret); require(doParallel); require(psych); require(FeatureHashing)
+require(xgboost); require(readr); require(caret); require(doParallel); require(psych); require(FeatureHashing); require(sqldf); require(dplyr)
+
+set.seed(11082015)
 
 ################################################################################################################
 
 #read in data 
 
-#train <- read_csv("C:/Users/amulya/Documents/Kaggle/Walmart/train.csv")
+#train_raw <- read_csv("C:/Users/amulya/Documents/Kaggle/Walmart/train.csv")
 
-#test <- read_csv("C:/Users/amulya/Documents/Kaggle/Walmart/test.csv")
+#test_raw <- read_csv("C:/Users/amulya/Documents/Kaggle/Walmart/test.csv")
 
 train_raw <- read_csv("D:/kaggle/walmart_seg/Data/train.csv")
 
@@ -238,7 +240,7 @@ for (i in 1:len) {
 
 #dummify few columns
 
-name <- c("Weekday", "DepartmentDescription")
+name <- c("Weekday", "DepartmentDescription", "ScanCount")
 
 tmp_dummy <- tmp[ , name ]
 
@@ -265,6 +267,35 @@ dim(tmp_dummy)
 
 ##############################################################################################################
 
+#test if the below code works before running 
+
+# ideally new feature engineering should be tried here
+
+
+tmp_features <- data.frame(id = 1:dim(tmp)[1])
+
+
+# features for difference from mean
+
+for(i in 1:ncol(tmp_new)){
+  
+  tmp_features[, paste(names(tmp_factors)[i], "_mean", sep="")] <- tmp_new[, i] - mean(tmp_new[, i])
+  
+  
+}
+
+
+
+# features for standardization
+
+for(i in 1:ncol(tmp_new)){
+  
+  tmp_features[, paste0(names(tmp_factors)[i], "_zscore")] <- ((tmp_new[, i] - mean(tmp_new[, i])) / sd(tmp_new[, i]))
+  
+  
+}
+
+############################################################################################################
 
 
 # combine all temporarily created df`s into a single tmp_new in a single piece of code  
