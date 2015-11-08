@@ -1,4 +1,3 @@
-
 #feature hashing
 
 # didn`t show much of a difference in eval_metric for50 trees and default param
@@ -71,7 +70,7 @@ param <- list(objective = "multi:softprob",
               num_class = numberOfClasses,
               
               nthreads = detectCores()
-              )
+)
 
 gc()
 
