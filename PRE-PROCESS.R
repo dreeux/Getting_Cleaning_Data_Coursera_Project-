@@ -2,9 +2,9 @@
 
 #load packages
 
-require(xgboost); require(readr); require(caret); require(doParallel); require(psych); require(FeatureHashing); require(sqldf); require(dplyr)
+require(xgboost); require(readr); require(caret); require(doParallel); require(data.table); require(FeatureHashing); require(sqldf); require(dplyr)
 
-set.seed(11082015)
+set.seed(11102015)
 
 ################################################################################################################
 
@@ -26,9 +26,9 @@ feature.names <- names(train_raw)[!names(train_raw) %in% c("TripType")]
 
 response <- names(train_raw)[1]
 
-response <- train_raw[ , response] ; response <- as.numeric(response)
+response <- train_raw[ , response] 
 
-class_old <- sort(unique(response))
+class_old <- sort(unique(response$TripType))
 
 class_new <- seq(0, 37)
 
@@ -83,7 +83,13 @@ for (f in feature.names) {
 
 tmp <- rbind(train_raw[ , feature.names], test_raw)
 
+# IMP : FACED ISSUES [ READ : CODE BREAKS] WHEN tbl_df WAS PRESENT CLASS
 
+#     : as.factor CONVERSION COULDN`T GO THROUGH 
+
+#     : REMOVING THE CLASS PROVED BENEFICIAL ; RUN THE BELOW CODE FOR CONVERSION
+
+tmp <- data.frame(tmp)
 
 
 # for counts (1 - way, 2 - way, 3 - way)
@@ -98,15 +104,15 @@ tmp <- rbind(train_raw[ , feature.names], test_raw)
 
 tmp_factors = tmp[ , feature.names]; dim(tmp_factors)
 
-len = length(names(tmp_factors))
+ len = length(names(tmp_factors))
 
 for (i in 1:len) {
   
-  print(paste0(( i / len) *100, "%"))
+  print(paste0( i / (len) *100, "%"))
   
-  tmp_factors[, i] <- as.factor(tmp_factors[, i])
+  tmp_factors[ , i] <- as.factor(tmp_factors[ , i])
   
-}
+  }
 
 #Important step ^^^^
 
@@ -204,7 +210,7 @@ for(i in 1:len){
   
   tmp1 <- sqldf("select cnt from tmp_factors a left join sum1 b on a.x=b.x")
   
-  tmp_count[, paste(names(tmp_factors)[i], "_cnt", sep="")] <- tmp1$cnt
+  tmp_count[, paste(names(tmp_factors)[i], "_one", sep="")] <- tmp1$cnt
   
 }  
 
@@ -235,14 +241,14 @@ for (i in 1:len) {
 
 #use this code before running dummy variables conversion 
 
-#Note IMP:  1. columns selected should be of factors
+#Note IMP:  1. Selected columns should be of factors
 
 
 #dummify few columns
 
 name <- c("Weekday", "DepartmentDescription", "ScanCount")
 
-tmp_dummy <- tmp[ , name ]
+tmp_dummy <- (tmp[ , name ])
 
 len = length(names(tmp_dummy))
 
@@ -279,7 +285,7 @@ tmp_features <- data.frame(id = 1:dim(tmp)[1])
 
 for(i in 1:ncol(tmp_new)){
   
-  tmp_features[, paste(names(tmp_factors)[i], "_mean", sep="")] <- tmp_new[, i] - mean(tmp_new[, i])
+  tmp_features[, paste(names(tmp_new)[i], "_mean", sep="")] <- tmp_new[, i] - mean(tmp_new[, i])
   
   
 }
@@ -290,7 +296,7 @@ for(i in 1:ncol(tmp_new)){
 
 for(i in 1:ncol(tmp_new)){
   
-  tmp_features[, paste0(names(tmp_factors)[i], "_zscore")] <- ((tmp_new[, i] - mean(tmp_new[, i])) / sd(tmp_new[, i]))
+  tmp_features[, paste0(names(tmp_new)[i], "_zscore")] <- ((tmp_new[, i] - mean(tmp_new[, i])) / sd(tmp_new[, i]))
   
   
 }
@@ -304,12 +310,13 @@ for(i in 1:ncol(tmp_new)){
 #tmp_new = cbind.data.frame(tmp_new, tmp_dummy)
 
 
-tmp_new = cbind.data.frame(tmp, tmp_count)
+tmp_new = cbind.data.frame(tmp, tmp_count, tmp_dummy)
 
+tmp_new = cbind.data.frame(tmp_new, tmp_features)
 
 #remove unwanted df
 
-rm(nms); rm(nms_df); rm(sum1); rm(tmp_count); rm(tmp_factors); rm(tmp1)
+rm(nms); rm(nms_df); rm(sum1); rm(tmp_count); rm(tmp_factors); rm(tmp1); rm(tmp_features); rm(tmp)
 
 #rm(tmp_new_cpy); rm(tmp_cpy)
 
