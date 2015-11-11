@@ -155,6 +155,7 @@ for(i in 1:dim(nms_df)[2]){
 ###############################################################################################################
 
 
+
 #3 way count
 
 nms <- combn(names(tmp_factors), 3)
@@ -193,6 +194,7 @@ for(i in 1:dim(nms_df)[2]){
 ##############################################################################################################
 
 
+
 #one way count
 
 len = dim(tmp_factors)[2]
@@ -216,6 +218,7 @@ for(i in 1:len){
 
 ###############################################################################################################
 
+
 # IMP : This step is not required unless the method of creating tmp_factors is similar to 
 
 # that used in springleaf Marketing response challenge
@@ -225,6 +228,7 @@ for(i in 1:len){
 
 
 #need to convert all of tmp_factors to numeric
+
 
 len = length(names(tmp_factors))
 
@@ -239,12 +243,14 @@ for (i in 1:len) {
 ###############################################################################################################
 
 
+
 #use this code before running dummy variables conversion 
 
 #Note IMP:  1. Selected columns should be of factors
 
 
 #dummify few columns
+
 
 name <- c("Weekday", "DepartmentDescription", "ScanCount")
 
@@ -261,6 +267,7 @@ for (i in 1:len) {
 }
 
 
+
 dummies <- dummyVars( ~ ., data = tmp_dummy)
 
 gc()
@@ -273,10 +280,12 @@ dim(tmp_dummy)
 
 ##############################################################################################################
 
+
 #test if the below code works before running 
 
 
 tmp_features <- data.frame(id = 1:dim(tmp)[1])
+
 
 
 # features for difference from mean
@@ -287,6 +296,7 @@ for(i in 1:ncol(tmp_new)){
   
   
 }
+
 
 
 
@@ -301,9 +311,11 @@ for(i in 1:ncol(tmp_new)){
 
 ###########################################################################################################
 
+
 # Take interaction features from feature importance from various different algos (Eg : 20 from each)
 
 # Interaction features
+
 
 int_col <- c()
 
@@ -315,18 +327,18 @@ tmp_int <- tmp_new[ , int_col]
 
 
 for (i in 1:ncol(tmp_int)) {
-
-    for (j in (i + 1) : (ncol(tmp_int) + 1)) {
   
-        var.x <- colnames(tmp_int)[i]
+  for (j in (i + 1) : (ncol(tmp_int) + 1)) {
     
-        var.y <- colnames(tmp_int)[j]
+    var.x <- colnames(tmp_int)[i]
     
-        var.new <- paste0(var.x, '_plus_', var.y)
+    var.y <- colnames(tmp_int)[j]
     
-        tmp_int[, paste0(var.new)] <- tmp_int[, i] + tmp_int[, j]
-  
-    }
+    var.new <- paste0(var.x, '_plus_', var.y)
+    
+    tmp_int[, paste0(var.new)] <- tmp_int[, i] + tmp_int[, j]
+    
+  }
 }
 
 
@@ -396,14 +408,57 @@ for (i in 1:ncol(tmp_int)) {
 
 
 
-
 tmp_int <- tmp_int[, -int_col]
+
+################################################################################################
+
+
+# Dealing with text data
+
+# Tried methods : 1. Length of string (nchar)
+
+#               : 2. number of words
+
+#               : 3. N-Grams
+
+
+# create a data frame with columns being of strings (character type)
+
+
+tmp_str <- data.frame((tmp[ , "DepartmentDescription"]))
+
+
+names(tmp_str) = ("Dept_Desc")
+
+
+#convert columns from character to factors in a data frame
+
+# code sourced from Stack Overflow
+
+
+i <- sapply(tmp_str, is.factor)
+
+
+tmp_str[i] <- lapply(tmp_str[i], as.character)
+
+
+tmp_str[, paste0("str_len")] <-  nchar(x = tmp_str$Dept_Desc) 
 
 
 ############################################################################################################
 
 
-# combine all temporarily created df`s into a single tmp_new in a single piece of code  
+# combine all temporarily created df`s into tmp_new in a single piece of code  
+
+# tmp_count
+
+# tmp_dummy
+
+# tmp_features
+
+# tmp_int
+
+# tmp_str
 
 
 #tmp_new = cbind.data.frame(tmp_new, tmp_dummy)
@@ -445,3 +500,4 @@ gc()
 train[is.na(train)] <- 0
 
 test[is.na(test)] <- 0
+
