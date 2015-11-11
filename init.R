@@ -431,6 +431,8 @@ tmp_str <- data.frame((tmp[ , "DepartmentDescription"]))
 names(tmp_str) = ("Dept_Desc")
 
 
+
+
 #convert columns from character to factors in a data frame
 
 # code sourced from Stack Overflow
@@ -443,6 +445,28 @@ tmp_str[i] <- lapply(tmp_str[i], as.character)
 
 
 tmp_str[, paste0("str_len")] <-  nchar(x = tmp_str$Dept_Desc) 
+
+
+
+# calculate number of words
+
+
+tmp_str$Dept_Desc <- gsub(' {2,}',' ', tmp_str$Dept_Desc)
+
+lnth <- rep(0, nrow(tmp_str))
+
+for(i in 1:nrow(tmp_str)) {
+
+lnth[i] <-  length(strsplit(tmp_str$Dept_Desc[i],' ')[[1]])
+
+}
+
+tmp_str$num_wrd <- lnth
+
+
+
+# calculate N-Grams of words
+
 
 
 ############################################################################################################
