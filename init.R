@@ -104,7 +104,7 @@ tmp <- data.frame(tmp)
 
 tmp_factors = tmp[ , feature.names]; dim(tmp_factors)
 
- len = length(names(tmp_factors))
+len = length(names(tmp_factors))
 
 for (i in 1:len) {
   
@@ -112,7 +112,7 @@ for (i in 1:len) {
   
   tmp_factors[ , i] <- as.factor(tmp_factors[ , i])
   
-  }
+}
 
 #Important step ^^^^
 
@@ -275,8 +275,6 @@ dim(tmp_dummy)
 
 #test if the below code works before running 
 
-# ideally new feature engineering should be tried here
-
 
 tmp_features <- data.frame(id = 1:dim(tmp)[1])
 
@@ -300,6 +298,107 @@ for(i in 1:ncol(tmp_new)){
   
   
 }
+
+###########################################################################################################
+
+# Take interaction features from feature importance from various different algos (Eg : 20 from each)
+
+# Interaction features
+
+int_col <- c()
+
+tmp_int <- tmp_new[ , int_col]
+
+
+
+# create + interaction features
+
+
+for (i in 1:ncol(tmp_int)) {
+
+    for (j in (i + 1) : (ncol(tmp_int) + 1)) {
+  
+        var.x <- colnames(tmp_int)[i]
+    
+        var.y <- colnames(tmp_int)[j]
+    
+        var.new <- paste0(var.x, '_plus_', var.y)
+    
+        tmp_int[, paste0(var.new)] <- tmp_int[, i] + tmp_int[, j]
+  
+    }
+}
+
+
+
+
+# create - interaction features
+
+
+for (i in 1:ncol(tmp_int)) {
+  
+  for (j in (i + 1) : (ncol(tmp_int) + 1)) {
+    
+    var.x <- colnames(tmp_int)[i]
+    
+    var.y <- colnames(tmp_int)[j]
+    
+    var.new <- paste0(var.x, '_minus_', var.y)
+    
+    tmp_int[, paste0(var.new)] <- tmp_int[, i] - tmp_int[, j]
+    
+  }
+}
+
+
+
+
+
+# create * interaction features
+
+
+for (i in 1:ncol(tmp_int)) {
+  
+  for (j in (i + 1) : (ncol(tmp_int) + 1)) {
+    
+    var.x <- colnames(tmp_int)[i]
+    
+    var.y <- colnames(tmp_int)[j]
+    
+    var.new <- paste0(var.x, '_mult_', var.y)
+    
+    tmp_int[, paste0(var.new)] <- tmp_int[, i] * tmp_int[, j]
+    
+  }
+}
+
+
+
+
+
+# create / interaction features
+
+
+for (i in 1:ncol(tmp_int)) {
+  
+  for (j in (i + 1) : (ncol(tmp_int) + 1)) {
+    
+    var.x <- colnames(tmp_int)[i]
+    
+    var.y <- colnames(tmp_int)[j]
+    
+    var.new <- paste0(var.x, '_divide_', var.y)
+    
+    tmp_int[, paste0(var.new)] <- tmp_int[, i] / tmp_int[, j]
+    
+  }
+}
+
+
+
+
+tmp_int <- tmp_int[, -int_col]
+
 
 ############################################################################################################
 
