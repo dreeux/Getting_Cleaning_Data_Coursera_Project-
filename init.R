@@ -510,9 +510,13 @@ tmp_new = cbind.data.frame(tmp_new, tmp_features)
 tmp_new = cbind.data.frame(tmp_new, tmp_str)
 
 
+gc()
+
 #remove unwanted df
 
-rm(nms); rm(nms_df); rm(sum1); rm(tmp_count); rm(tmp_factors); rm(tmp1); rm(tmp_features); rm(tmp)
+rm(nms); rm(nms_df); rm(sum1); rm(tmp_count); rm(tmp_factors); rm(tmp1); rm(tmp_features) 
+
+rm(tmp); rm(tmp_str); rm(train); rm(test)
 
 #rm(tmp_new_cpy); rm(tmp_cpy)
 
@@ -529,7 +533,9 @@ dim(train); dim(test)
 gc()
 
 #rm(tmp_new); rm(tmp_str)
+
 #gc()
+
 ##############################################################################################################
 
 #check for new ways to impute NA
