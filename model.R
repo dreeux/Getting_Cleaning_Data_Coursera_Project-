@@ -67,9 +67,7 @@ param <- list(objective = "multi:softprob",
               
               eval_metric = "mlogloss",
               
-              num_class = numberOfClasses,
-              
-              nthreads = detectCores()
+              num_class = numberOfClasses
               )
 
 gc()
@@ -85,7 +83,7 @@ start <- Sys.time()
 
 clf <- xgb.train(params = param, data = dtrain, nrounds = 50, watchlist = watchlist,
                  
-                 verbose = 1, maximize = T)
+                 verbose = 1, maximize = T, nthread = 2)
 
 time_taken <- Sys.time() - start
 
@@ -109,16 +107,13 @@ for (depth in c(9, 10, 8)) {
                     
                     max_depth = depth ,
                     
-                    eta = eta,
-                    
-                    nthreads = detectCores()
-                    
-      )
+                    eta = eta
+                    )
       
       
       clf <- xgb.train(params = param, data = dtrain, watchlist = watchlist, nrounds = rounds,
                        
-                       verbose = 1, maximize = T)
+                       verbose = 1, maximize = T, nthread = 2)
       gc()
       
       
