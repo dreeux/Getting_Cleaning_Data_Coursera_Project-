@@ -69,7 +69,7 @@ submit <- function(model, data, file) {
 
 # grid search
 
-for (depth in c(10, 11, 9)) {
+for (depth in c(10, 12, 14)) {
     
     for(eta in c(0.01, 0.02, 0.03)){
       
@@ -91,6 +91,7 @@ for (depth in c(10, 11, 9)) {
                        verbose = 1, maximize = T, nthread = 4)
       gc()
       
+      # check
       
       xgb.save(clf, paste0("D:/kaggle/walmart_seg/models/", "clf", "_", "_",depth, "_", eta) )
       
