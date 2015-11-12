@@ -67,7 +67,16 @@ param <- list(objective = "multi:softprob",
               
               eval_metric = "mlogloss",
               
-              num_class = numberOfClasses
+              num_class = numberOfClasses,
+              
+              max_depth = 12,
+              
+              eta = 0.01,
+              
+              colsample_bytree = 0.8,
+              
+              subsample = 0.8
+              
               )
 
 gc()
