@@ -426,13 +426,20 @@ tmp_int <- tmp_int[, -int_col]
 
 # create a new tmp df with raw features
 
-tmp_1 <- read_csv("D:/kaggle/walmart_seg/Data/train.csv")
+# these changes introduced NA`s in dval N dtrain 
+
+# solution : remove NA`s before combining 
+
+tmp_1 <- read_csv("D:/kaggle/walmart_seg/Data/train.csv")[-1]
 
 tmp_2 <- read_csv("D:/kaggle/walmart_seg/Data/test.csv")
 
 tmp <- rbind(tmp_1, tmp_2)
 
 tmp_str <- data.frame((tmp[ , "DepartmentDescription"]))
+
+
+tmp_str[is.na(tmp_str)] <- 0
 
 
 names(tmp_str) = ("Dept_Desc")
@@ -463,9 +470,9 @@ tmp_str$Dept_Desc <- gsub(' {2,}',' ', tmp_str$Dept_Desc)
 lnth <- rep(0, nrow(tmp_str))
 
 for(i in 1:nrow(tmp_str)) {
-
-lnth[i] <-  length(strsplit(tmp_str$Dept_Desc[i],' ')[[1]])
-
+  
+  lnth[i] <-  length(strsplit(tmp_str$Dept_Desc[i],' ')[[1]])
+  
 }
 
 tmp_str$num_wrd <- lnth
@@ -521,7 +528,8 @@ dim(train); dim(test)
 
 gc()
 
-
+#rm(tmp_new); rm(tmp_str)
+#gc()
 ##############################################################################################################
 
 #check for new ways to impute NA
@@ -534,6 +542,8 @@ gc()
 
 train[is.na(train)] <- 0
 
+gc()
+
 test[is.na(test)] <- 0
 
-# rm(tra); rm(pred); rm(sample); rm(split); rm(submission); rm(dummies); rm(lnth) 
+gc()
