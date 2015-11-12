@@ -424,6 +424,13 @@ tmp_int <- tmp_int[, -int_col]
 
 # create a data frame with columns being of strings (character type)
 
+# create a new tmp df with raw features
+
+tmp_1 <- read_csv("D:/kaggle/walmart_seg/Data/train.csv")
+
+tmp_2 <- read_csv("D:/kaggle/walmart_seg/Data/test.csv")
+
+tmp <- rbind(tmp_1, tmp_2)
 
 tmp_str <- data.frame((tmp[ , "DepartmentDescription"]))
 
@@ -468,6 +475,7 @@ tmp_str$num_wrd <- lnth
 # calculate N-Grams of words
 
 
+rm(tmp); rm(tmp_1); rm(tmp_2)
 
 ############################################################################################################
 
@@ -491,6 +499,9 @@ tmp_str$num_wrd <- lnth
 tmp_new = cbind.data.frame(tmp, tmp_count, tmp_dummy)
 
 tmp_new = cbind.data.frame(tmp_new, tmp_features)
+
+tmp_new = cbind.data.frame(tmp_new, tmp_str)
+
 
 #remove unwanted df
 
