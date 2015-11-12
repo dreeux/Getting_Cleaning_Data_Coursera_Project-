@@ -69,11 +69,9 @@ submit <- function(model, data, file) {
 
 # grid search
 
-for (depth in c(9, 10, 8)) {
-  
-  for (rounds in c(2000, 3000)) {
+for (depth in c(10, 11, 9)) {
     
-    for(eta in c(0.3, 0.2, 0.1)){
+    for(eta in c(0.01, 0.02, 0.03)){
       
       # train
       param <- list(objective = "multi:softprob",
@@ -85,24 +83,21 @@ for (depth in c(9, 10, 8)) {
                     max_depth = depth ,
                     
                     eta = eta,
-                    
-                    nthreads = 4
       )
       
       
-      clf <- xgb.train(params = param, data = dtrain, watchlist = watchlist, nrounds = rounds,
+      clf <- xgb.train(params = param, data = dtrain, watchlist = watchlist, nrounds = 1000,
                        
-                       verbose = 1, maximize = T)
+                       verbose = 1, maximize = T, nthread = 4)
       gc()
       
       
-      xgb.save(clf, paste0("clf", "_", rounds, "_",depth, "_", eta) )
+      xgb.save(clf, paste0("D:/kaggle/walmart_seg/models/", "clf", "_", "_",depth, "_", eta) )
       
       #scoring to be done -- issues with function scoring
       
     }     
   }
-}  
 
 
 
@@ -215,7 +210,7 @@ param <- list("objective" = "multi:softprob",
 
 "silent"=1,
 
-"num_class" = 9,
+"num_class" = 38,
 
 "nthread" = threads)
 
@@ -224,7 +219,6 @@ param_list <- list()
 for (i in seq(n_set)){
 
 ## n_par <- length(param)
-
 
 param$max_depth <- sample(3:7,1, replace=T)
 
@@ -236,10 +230,7 @@ param$colsample_bytree <- runif(1,0.1,1)
 
 param$min_child_weight <- sample(1:17,1, replace=T)
 
-
 param$gamma <- runif(1,0.1,10)
-
-param$min_child_weight <- sample(1:15,1, replace=T)
 
 param_list[[i]] <- param
 
