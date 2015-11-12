@@ -536,3 +536,4 @@ train[is.na(train)] <- 0
 
 test[is.na(test)] <- 0
 
+# rm(tra); rm(pred); rm(sample); rm(split); rm(submission); rm(dummies); rm(lnth) 
