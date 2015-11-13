@@ -134,7 +134,7 @@ for (depth in c(10, 15, 20,25)) {
       gc()
       
       
-      xgb.save(clf, paste0("D:/kaggle/walmart_seg/models/", "clf","_", depth, "_", eta) )
+      xgb.save(clf, paste0("D:/kaggle/walmart_seg/models/", "clf","_", depth, "_", eta, ".R") )
       
       #scoring to be done -- issues with function scoring
       
