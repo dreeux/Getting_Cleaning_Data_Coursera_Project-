@@ -579,3 +579,21 @@ gc()
 test[is.na(test)] <- 0
 
 gc()
+
+#############################################################################################################################
+
+# Impute method : KnnImpute
+
+# columns upc and fineline number has 419 NA's 
+
+pp_1_test = preProcess(iris_miss_1, method = "knnImpute")
+
+set.seed(1)
+
+test_1_result <- predict(pp_1_test, iris_miss_1)
+
+#bag Impute
+
+preProc <- preProcess(method="bagImpute", training[, 1:4])
+
+training[, 1:4] <- predict(preProc, training[, 1:4])
