@@ -1,28 +1,3 @@
-Hi Arun,
-
- 
-
-Thanks for writing and sending the plot. It’s a pleasure connecting with you and let’s keep in touch regarding your educational goals (great initiative on the MOOCs!) and the types of work you’d like to be engaged with. There are a lot of exciting initiatives with the CSO and I’m actively looking to engage folks.
-
- 
-
-If you like, add me to your Kaggle team and I can provide advisory for you (and we’d be in the terms of agreement of the competition). Here is my handle: ark2003
-
- 
-
-Also, it’d be good to get on the phone at some point and meet in person. I’ll be in India in Dec and Jan. We can use this email thread to coordinate
-
- 
-
-All the best,
-
- 
-
-Armen
-
-
-
-
 
 # explicitly mention data.table usage at the beginning 
 
