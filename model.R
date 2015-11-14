@@ -1,9 +1,23 @@
-rm(test_raw); rm(train_raw); rm(cl);rm(class_new); rm(class_old); rm(depth); rm(cnames); rm(dtrain); rm(dval)
+# Best method to remove variables in R Memory
 
-rm(eta); rm(f); rm(feature.names); rm(i); rm(j); rm(len); rm(levels); rm(nam); rm(name); rm(numberOfClasses)
+# rm(list=setdiff(ls(), removed))
 
-rm(start); rm(time_taken); rm(watchlist); rm(my.f2cnt); rm(my.f3cnt); rm(tmp_str); rm(tmp_new); rm(lnth)
+# where x could be name of any file present
 
+# Another Option : change List to Grid and delete 
+
+# This step more useful as it helps in efficient memory usage
+
+
+removed <- c(test_raw, train_raw, cl, class_new, class_old, depth, cnames, dtrain, dval, eta, f, 
+             
+             feature.names, i, j, len, levels, nam, name, numberOfClasses, start, time_taken, 
+             
+             watchlist, my.f2cnt, my.f3cnt, tmp_str, tmp_new, lnth
+             
+             )
+
+rm(list=setdiff(ls(), removed))
 
 
 #feature hashing
@@ -82,7 +96,7 @@ param <- list(objective = "multi:softprob",
               
               subsample = 0.8
               
-              )
+)
 
 gc()
 
@@ -99,7 +113,7 @@ start <- Sys.time()
 clf <- xgb.train(params = param, data = dtrain, nrounds = 20, watchlist = watchlist,
                  
                  verbose = 1, maximize = T, nthread = 2
-                 )
+)
 
 
 time_taken <- Sys.time() - start
@@ -113,34 +127,34 @@ time_taken <- Sys.time() - start
 for (depth in c(10, 15, 20,25)) {
   
   for(eta in c(0.03, 0.02, 0.01)){
-      
-      # train
-      param <- list(objective = "multi:softprob",
-                    
-                    eval_metric = "mlogloss",
-                    
-                    num_class = numberOfClasses,
-                    
-                    max_depth = depth ,
-                    
-                    eta = eta,
-                    
-      )
-      
-      
-      clf <- xgb.train(params = param, data = dtrain, watchlist = watchlist, nrounds = 5,
-                       
-                       verbose = 1, maximize = T, nthread = 2)
-      gc()
-      
-      
-      xgb.save(clf, paste0("D:/kaggle/walmart_seg/models/", "clf","_", depth, "_", eta, ".R") )
-      
-      #scoring to be done -- issues with function scoring
-      
-    }     
-  }
-  
+    
+    # train
+    param <- list(objective = "multi:softprob",
+                  
+                  eval_metric = "mlogloss",
+                  
+                  num_class = numberOfClasses,
+                  
+                  max_depth = depth ,
+                  
+                  eta = eta
+                  
+    )
+    
+    
+    clf <- xgb.train(params = param, data = dtrain, watchlist = watchlist, nrounds = 5,
+                     
+                     verbose = 1, maximize = T, nthread = 2)
+    gc()
+    
+    
+    xgb.save(clf, paste0("D:/kaggle/walmart_seg/models/", "clf","_", depth, "_", eta, ".R") )
+    
+    #scoring to be done -- issues with function scoring
+    
+  }     
+}
+
 
 
 Time_Taken <- Sys.time() - start
