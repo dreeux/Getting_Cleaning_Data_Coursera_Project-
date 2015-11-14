@@ -263,7 +263,11 @@ for (i in 1:len) {
   
   print(paste0(( i / len) * 100, "%"))
   
-  tmp_dummy[, i] <- as.factor(tmp_dummy[, i])
+  # possible error in code ; levels not clearly defined that's why large df being allocated
+  
+  levels <- unique(tmp_dummy[[i]])
+  
+  tmp_dummy[, i] <- as.factor(tmp_dummy[, i], levels = levels)
   
 }
 
