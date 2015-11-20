@@ -1,3 +1,14 @@
+data(mtcars); dim(mtcars)
+
+for(i in c(1:10)){
+  
+   pred <- data.frame(sample(1:40, 32))
+
+   names(pred) <- paste0("pred", "_", i)
+  
+   mtcars <- cbind(mtcars, pred)
+  
+}
 
 # explicitly mention data.table usage at the beginning 
 
