@@ -1,0 +1,201 @@
+##############################################################################################
+
+
+library(Matrix)
+
+
+amazon_train = sparse.model.matrix(~. - 1, data = amazon_train) # -1 = no intercept column
+
+
+# use contrats arg to add all factors
+
+
+amazon_train = amazon_train[,-1] #remove split of ACTION0 , ACTION1
+
+
+
+#############################################################################################
+
+
+# Ensemble
+
+
+1) create a K fold CV of your training data
+
+
+
+2) for i in 1 to K  (repeat this for multiple models)
+
+
+
+- label all folds not equal to [i] as fold_training, label fold [i] = fold_test
+
+
+
+- fit any suitable model using your fold_training set
+
+
+
+- predict on your fold_test set 
+
+
+
+3) order your predictions for each model from fold_test as one column against the 
+
+
+
+dependant variable (ACTION) in the training data
+
+
+
+4) train a model (i.e. linear regression) using ACTION against each of your model's predictions.  
+
+
+
+-record the coefficient estimates (exclude intercept ) these are your model weights.
+
+
+
+5) fit original training data to each model, run predictions on your real test data, 
+
+
+
+weigh each model's prediction by its weight, and sum up the total for each observation.
+
+
+
+##############################################################################################
+
+
+
+Miroslaw code
+
+
+Algo
+
+
+1. Transform the data to higher degree features by considering 
+
+
+all pairs and triples of the original data ignoring 'ROLE_CODE'
+
+
+
+2. Perform a One Hot Encoding on each individual column, but maintain the 
+
+
+original transformed feature column that was associated with the encoding
+
+
+
+3.Perform greedy forward selection on the encoded data by training the model on ever 
+
+
+increasing subsets of the original transformed columns so that I am 
+
+
+selecting for groups of encoded binary features, not the individual binary feature bits
+
+
+
+4. Use the selected features to perform hyperparmeter fitting
+
+
+
+5. Train the full model and predict
+
+
+
+###############################################################################################
+
+
+#### group data and feature selection ########################################################
+
+
+group_dataAndOneHotEncoder <- function(data, degree = 3){
+
+
+require(Matrix)
+
+
+m <- ncol(data)
+
+
+indicies <- combn(1:m, degree)
+
+
+dataStr <- apply(indicies, 2, function(s) apply(data[,s], 1, 
+
+		 function(x) paste0(x, collapse = "a")))
+
+
+dataFactor <- data.frame(apply(dataStr, 2, factor))
+
+
+outdat <- sparse.model.matrix(~ . - 1, data = dataFactor)
+
+
+outdat
+
+}
+
+
+
+# dataFactor <- data.frame(apply(dataStr, 2, factor)) seems to return a matrix, and that 
+
+
+# gave me an error when I tried to run sparse.model.matrix. Doing a loop instead - worked.
+
+
+
+greedy forward selection function
+
+
+ https://gist.github.com/dylanjf/5832136
+
+
+# Issues
+
+
+# https://www.kaggle.com/c/amazon-employee-access-challenge/forums/t/4838/python-code-to-achieve-0-90-auc-with-logistic-regression/26186#post26186
+
+
+
+# group data => create combinations of a given order
+
+
+groupData <- function(xmat, degree){
+
+
+# indices of combinations
+
+
+xind <- combn(1:ncol(xmat), degree)
+
+		
+# storage structure for the result
+
+		
+agx <- foreach(ii = 1:ncol(xind), .combine = cbind ) %do% {
+
+
+x <- xmat[,xind[1,ii]]
+
+
+for (jj in 2:nrow(xind)){
+
+
+x <- paste(x, xmat[,xind[jj,ii]], sep = "_")}
+
+
+x
+
+
+}
+
+
+colnames(agx) <- paste(paste("f", degree, sep = ""), 1:ncol(agx), sep = "_")
+
+		return(agx)
+}
+	
