@@ -265,3 +265,18 @@ head(factorToNumeric(train, test, "Hazard", "T1_V4", c("mean","median","sd")))
 # new approach--------------------------------------------------------------------------------------------------------------
 
 # add interaction features ( all types + | / | - | * ) to the best performing model
+
+# use add new features function ( something similar to obtain the end result )
+
+addAggFeatures <- function(data) {
+
+# add new features
+  
+  mutate(data, feat_sum = as.integer(rowSums(data[, 1:ncol(tmp_new)])),  # count sum of features by row
+         
+         feat_var = as.integer(apply(data[, 1:ncol(tmp_new)], 1, var)),  # variance of features by row
+         
+         feat_filled = as.integer(rowSums(data[, 1:ncol(tmp_new)] != 0))  # count no. of non-empty features
+  )
+  
+}
