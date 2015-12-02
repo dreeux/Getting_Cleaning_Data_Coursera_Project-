@@ -264,5 +264,4 @@ head(factorToNumeric(train, test, "Hazard", "T1_V4", c("mean","median","sd")))
 
 # new approach--------------------------------------------------------------------------------------------------------------
 
-
-
+# add interaction features ( all types + | / | - | * ) to the best performing model
