@@ -429,7 +429,21 @@ feat_var <- as.integer(apply(tmp[, 1:ncol(tmp)], 1, var)),
 feat_filled <- as.integer(rowSums(tmp[, 1:ncol(tmp)] != 0)),
 
 # count of NA in rows
-feat_NA <- apply(X = tmp, MARGIN = 1, FUN = function(x) sum(is.na(x))) 
+feat_NA <- apply(X = tmp, MARGIN = 1, FUN = function(x) sum(is.na(x))),  
+
+# optional features -- statistical feature addition
+
+feat_mean <- as.integer(apply(tmp[, 1:ncol(tmp)], 1, mean)),  
+
+feat_median <- as.integer(apply(tmp[, 1:ncol(tmp)], 1, median))
+
+feat_min <- as.integer(apply(tmp[, 1:ncol(tmp)], 1, min))
+
+feat_max <- as.integer(apply(tmp[, 1:ncol(tmp)], 1, max))
+
+feat_LENunique <- as.integer(apply(tmp[, 1:ncol(tmp)], 1, function(x) length(unique(x)))
+
+
 
 ##------------------------------------------------------------------------------------------------------------------------------------
 
