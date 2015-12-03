@@ -288,7 +288,9 @@ addAggFeatures <- function(data) {
 
 # loop around fr different seed settings
 
-set.seed( # set number here)
+set.seed(1718)
+
+# set.seed(12032015)
 
 require(data.table); require(lubridate); require(caret); require(sqldf); require(xgboost); require(sqldf); require(xlsx); require(Matrix)
 
@@ -306,6 +308,7 @@ test_raw <- fread(input = "D:\\kaggle\\HOMESITE\\Data\\test.csv", data.table = F
 id <- test_raw$QuoteNumber
 
 test_raw$QuoteNumber <- NULL
+
 
 
 tmp <- rbind(train_raw, test_raw)
@@ -382,9 +385,26 @@ clf <- xgb.train(   params              = param,
                     maximize            = FALSE
 )
 
+
+
 pred <- predict(clf, data.matrix(test[,feature.names]))
 
 submission <- data.frame(QuoteNumber=test$QuoteNumber, QuoteConversion_Flag=pred1)
 
 write_csv(submission, "D:\\kaggle\\HOMESITE\\submission\\12032015_1.csv")
 
+# CV <- xgb.cv()
+
+xgb.cv(params = param, 
+       
+       data = dtrain, 
+       
+       nrounds = 50, 
+       
+       nfold = 10, 
+       
+       showsd = T, 
+       
+       verbose = 1, 
+       
+       maximize = F)
