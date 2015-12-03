@@ -407,4 +407,128 @@ xgb.cv(params = param,
        
        verbose = 1, 
        
-       maximize = F)
+       maximize = F
+       )
+       
+       
+# edit --- added new features
+
+
+
+# new vars
+
+##-------------------------------------------------------------------------------------------------------------------------------------
+
+# count sum of features by row
+mutate(tmp, feat_sum <- as.integer(rowSums(tmp[, 1:ncol(tmp)])),  
+
+# variance of features by row
+feat_var <- as.integer(apply(tmp[, 1:ncol(tmp)], 1, var)),  
+
+# count no. of non-empty features
+feat_filled <- as.integer(rowSums(tmp[, 1:ncol(tmp)] != 0)),
+
+# count of NA in rows
+feat_NA <- apply(X = tmp, MARGIN = 1, FUN = function(x) sum(is.na(x))) 
+
+##------------------------------------------------------------------------------------------------------------------------------------
+
+## add interaction features
+
+# Take interaction features from feature importance from various different algos (Eg : 20 from each)
+
+# Interaction features
+
+
+int_col <- c()
+
+tmp_int <- tmp_new[ , int_col]
+
+
+
+# create + interaction features
+
+
+for (i in 1:ncol(tmp_int)) {
+  
+  for (j in (i + 1) : (ncol(tmp_int) + 1)) {
+    
+    var.x <- colnames(tmp_int)[i]
+    
+    var.y <- colnames(tmp_int)[j]
+    
+    var.new <- paste0(var.x, '_plus_', var.y)
+    
+    tmp_int[ , paste0(var.new)] <- tmp_int[, i] + tmp_int[, j]
+    
+  }
+}
+
+
+
+
+# create - interaction features
+
+
+for (i in 1:ncol(tmp_int)) {
+  
+  for (j in (i + 1) : (ncol(tmp_int) + 1)) {
+    
+    var.x <- colnames(tmp_int)[i]
+    
+    var.y <- colnames(tmp_int)[j]
+    
+    var.new <- paste0(var.x, '_minus_', var.y)
+    
+    tmp_int[ , paste0(var.new)] <- tmp_int[, i] - tmp_int[, j]
+    
+  }
+}
+
+
+
+
+
+# create * interaction features
+
+
+for (i in 1:ncol(tmp_int)) {
+  
+  for (j in (i + 1) : (ncol(tmp_int) + 1)) {
+    
+    var.x <- colnames(tmp_int)[i]
+    
+    var.y <- colnames(tmp_int)[j]
+    
+    var.new <- paste0(var.x, '_mult_', var.y)
+    
+    tmp_int[ , paste0(var.new)] <- tmp_int[, i] * tmp_int[, j]
+    
+  }
+}
+
+
+
+
+
+# create / interaction features
+
+
+for (i in 1:ncol(tmp_int)) {
+  
+  for (j in (i + 1) : (ncol(tmp_int) + 1)) {
+    
+    var.x <- colnames(tmp_int)[i]
+    
+    var.y <- colnames(tmp_int)[j]
+    
+    var.new <- paste0(var.x, '_divide_', var.y)
+    
+    tmp_int[, paste0(var.new)] <- tmp_int[, i] / tmp_int[, j]
+    
+  }
+}
+
+
+
+tmp_int <- tmp_int[, -int_col]
