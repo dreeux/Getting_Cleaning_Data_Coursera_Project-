@@ -229,3 +229,20 @@ test.pred <- fn.opt.pred(opt.result$par, test[,cols])
 # link for conceptual ideas for stacking
 
 https://www.kaggle.com/c/amazon-employee-access-challenge/forums/t/4928/combining-the-results-of-various-models/26591#post26591
+
+
+
+
+
+
+
+
+#####################################################################################################################################
+
+# row wise count of NA's
+
+apply(tmp, 1, function(x) sum(x == -1))
+
+# column wise count of NA's
+
+apply(tmp, 2, function(x) sum(x == -1))
