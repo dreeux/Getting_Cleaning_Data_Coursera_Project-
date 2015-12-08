@@ -246,3 +246,8 @@ apply(tmp, 1, function(x) sum(x == -1))
 # column wise count of NA's
 
 apply(tmp, 2, function(x) sum(x == -1))
+
+
+# vars not to be used in dummy variable creation
+
+nominal_remove <- c("Field8", "Field9", "Field11")
