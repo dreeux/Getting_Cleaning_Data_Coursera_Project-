@@ -295,3 +295,15 @@ both = both-1
 tsne <- Rtsne(both, check_duplicates = FALSE, pca = FALSE, verbose=TRUE,
 
               perplexity=30, theta=0.5, dims=2)
+              
+
+
+#####################################################################################################################################
+
+# count of non zero columns
+
+# count no. of non-empty features
+
+feat_filled = as.integer(rowSums(data[, 1:ncol(tmp_new)] != 0))  
+              
+              
