@@ -305,5 +305,22 @@ tsne <- Rtsne(both, check_duplicates = FALSE, pca = FALSE, verbose=TRUE,
 # count no. of non-empty features
 
 feat_filled = as.integer(rowSums(data[, 1:ncol(tmp_new)] != 0))  
-              
+
+# simple coding
+# forward difference coding
+# backward difference coding
+# Helmert coding
+# Reverse Helmert coding
+# Deviation coding
+# Orthogonal Polynomial coding
+# user defined coding
+
+
+replace a categorical variable by number of times it appears in the train set (1 way count, 2 way count, 3 way count)
+
+
+categorical variable with the AVERAGE of the target variable (over records with the same feature) and sometimes add a VARIANCE 
+
+(or standard deviation) column that can help mitigate low predictive power or low cardinality values in the feature
+
               
