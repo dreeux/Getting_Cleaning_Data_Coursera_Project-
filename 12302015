@@ -210,3 +210,14 @@ submission$Response = as.integer(preds)
 
 
 write.csv(submission,   , row.names = FALSE)
+
+
+######################################################################################################################################
+
+for non linear algos replace a cat. var by number of times
+
+it appears in the set
+
+GBM with out-of-fold treatment of high-cardinality feature 
+
+performs very well
