@@ -1,3 +1,18 @@
+
+df_1 <- data.frame(v1 = unique(df$v1), v2 = rep(0, length(unique(df$v1)) ))
+
+for(i in unique(df$v1)){
+  
+  test <- df[df$v1 == i, ]
+  
+  tmp <- (test$v2)
+  
+  df_1[i, 2] <- (unique(tmp))
+  
+  }
+
+
+
 library(caret)
 
 
