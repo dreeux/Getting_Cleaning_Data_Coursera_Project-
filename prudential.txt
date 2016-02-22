@@ -1,0 +1,57 @@
+submissions are scored based on the quadratic weighted kappa, which measures the agreement 
+between two ratings. Metric ranges from 0 (random agreement) to 1 (complete agreement)
+
+
+The response variable has 8 possible ratings
+
+
+
+
+
+#########################################################################################
+
+Train observations 59381 ~ 128 features
+
+Test observations  19765
+
+
+Id, Product_info_1-7, Ins_Age, Ht, Wt, BMI, Employment_Info_1-6, Insured_Info_1-6, 
+
+Insurance_History_1-9, Family_Hist_1-5, Medical_History_1-41, Medical_Keyword_1-48,
+
+Response
+
+
+tried a lot of approaches , feature engineering had little or no effect in this competition
+
+1. row wise count of NA
+
+2. One hot encoding for Product_Info_2
+
+3. count of Medical_Keywords
+
+4. Interaction terms for "Ins_Age", "BMI"
+
+
+used stacking with base models being 
+
+xgboost ( linear objective , poisson objective) 
+
+gbm, rf, glm
+
+used xgb as level 1 model ( linear regression produced better results ) 
+
+
+optimised the cut off points using optim function in base R
+
+ 
+
+
+
+
+
+
+
+
+
+

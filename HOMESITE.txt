@@ -1,0 +1,96 @@
+
+Using an anonymized database of information on customer and sales activity, including 
+
+property and coverage information, Homesite is challenging you to predict which customers 
+
+will purchase a given quote. 
+
+
+metric - AUC
+
+
+Modelling approaches - Homesite
+
+
+Used Leaderboard feedback for validation
+
+(Using LB as feedback is obviously not the right way to go about for validation, 
+
+should use either CV or holdout set each model iteration run was taking 8-10 hours, cv 
+
+requires better hardware config (was running on a dual core), using a hold out means one 
+
+had to retrain the model twice , This is a one off case, I have upgraded my local machine,
+
+running i5 now. Should not be a problem in the next competitions)
+
+
+
+Feature Engineering / preprocessing
+
+
+I did try a whole lot of approaches , I'll mention the approaches which worked
+
+
+removed features with zero variance and non zero variance
+
+used LabelEncoder to convert character features into numeric
+
+In the dataset missing values were encoded as -1 by the organisers, there were two 
+
+columns which still had missing values ( All categorical) , tried different imputation 
+
+methods none of which translated to a LB increase , went with -1
+
+
+From the date field created extra vars such as month, year, day, week, dates with different 
+
+formats (((tmp$year * 52 ) + tmp$week) %% 4)
+
+
+one hot encoding for categoricals and date features
+
+( tried different categorical variable thresholds for dummy variable creation )
+
+
+row wise count of NA's, zeros
+
+
+used feature importance and corelation to target to select features to be used for 
+
+creating interaction features. Got the biggest LB jump by trying this.
+
+
+tried only 2 way feature interaction
+
+In forums top solutions used 2, 3, 4 way interactions 
+
+
+Switched to the prudential challenge midway , On the last week tried building the base 
+
+models and ensembling but there was a bug in the ensemble code which I was able to fix 
+only after the competition got over which affected things. 
+
+
+
+DATA AVAILABLE and NUANCES
+
+train dataset had around 260K rows , test dataset had around 174K rows with 298 features
+
+response is binary and with 0 and 1 being the two classes. 81 % of values in response are 
+
+0's and the remaining 19% are 1's.
+
+Features are mainly divided into 5 categories.
+
+    Coverage Fields
+    Sales Fields
+    Property Fields
+    Personal Fields
+    Geographic Fields
+
+Other than a Date feature ( Original_Quote_Date) and a continuous feature ( Sales Field8) , 
+remaining  are Categorical features. 
+
+    
+
